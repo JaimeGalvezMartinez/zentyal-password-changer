@@ -1,4 +1,13 @@
 # zentyal-password-changer
 Formulario web en PHP para permitir a los usuarios cambiar su contraseña en un servidor Zentyal / LDAP, Este formulario PHP Lo he creado basicamente para facilitar a cada usuario cambiar facilmente su contraseña.
 
+## 💡 Características
+
+- Verifica las credenciales actuales del usuario antes de cambiar la contraseña.
+- Permite cambiar la contraseña a través de un **bind de administrador** en LDAP.
+- Mensajes de error y éxito claros.
+- Diseño moderno y responsivo con CSS.
+- Compatible con **LDAPS** y configuraciones de Active Directory locales.
+
+
 
