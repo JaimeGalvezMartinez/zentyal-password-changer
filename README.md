@@ -26,3 +26,9 @@ Formulario web en PHP para permitir a los usuarios cambiar su contraseña en un 
 
 <img width="1919" height="960" alt="imagen" src="https://github.com/user-attachments/assets/8518c14f-5a12-4fa0-87e5-23dcd2fbb895" />
 
+2. Después, Cuanto introducimos nuestras credenciales correctamente en el <strong>Login</strong>. Podremos acceder al formulario para cambiar la contraseña del usuario en LDAP/Zentyal
+
+<img width="1917" height="1005" alt="imagen" src="https://github.com/user-attachments/assets/3b8148d1-a0bf-47f5-87f9-fa5676377f76" />
+
+
+
