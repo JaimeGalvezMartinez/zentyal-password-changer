@@ -8,8 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     putenv('LDAPTLS_REQCERT=never');
 
-    $ldap_host = "ldaps://127.0.0.1";  # o la ip de tu ldap
-    $base_dn   = "DC=dominio,DC=local";
+    $ldap_host = "ldaps://127.0.0.1";  # o la ip de tu Zentyal / ldap
+    $base_dn   = "DC=dominio,DC=local"; # Cambiar en DC=nombredeldominio,DC=extensiondominio 
 
     // 🔐 USUARIO ADMINISTRADOR (OBLIGATORIO)
     $admin_user = "admministradordominio@dominio.local";  # Usuario Zentyal Admin
