@@ -20,3 +20,9 @@ Formulario web en PHP para permitir a los usuarios cambiar su contraseña en un 
 - Servidor LDAP/AD accesible (puede ser local o remoto)
 - Acceso a usuario administrador en LDAP
 
+## Funcionamiento
+
+1. Primero, Tenemos que loguearnos con nuestro usuario y contraseña de LDAP, para, poder acceder al formulario para cambiar la contraseña.
+
+<img width="1919" height="960" alt="imagen" src="https://github.com/user-attachments/assets/8518c14f-5a12-4fa0-87e5-23dcd2fbb895" />
+
