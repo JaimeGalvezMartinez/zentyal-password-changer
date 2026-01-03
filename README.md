@@ -17,7 +17,6 @@ Formulario web en PHP para permitir a los usuarios cambiar su contraseña en un 
   sudo apt update
   sudo apt install php-ldap php-mbstring
   sudo systemctl restart apache2
-´´´
 - Servidor LDAP/AD accesible (puede ser local o remoto)
 - Acceso a usuario administrador en LDAP
 
