@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     /* ADMIN DEL DOMINIO (ZENTYAL) */
     $admin_user = "domainadmin@dominio.local";
-    $admin_pass = "";
+    $admin_pass = "contraseña_administrador_dominio";
 
     /* DATOS FORMULARIO */
     $usuario  = $_POST['usuario'] ?? '';
