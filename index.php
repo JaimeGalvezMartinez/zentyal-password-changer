@@ -45,11 +45,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
-    if (!@ldap_bind($ldap, "$usuario@casa.local", $old_pass)) {
+    if (!@ldap_bind($ldap, "$usuario@nombredomino.local", $old_pass)) {
         $mensaje = "<div class='error'>Usuario o contraseña actual incorrectos</div>";
         goto end;
     }
-
+# Cambiar nomredominio.local por el n zentyal 
+    
     ldap_unbind($ldap);
 
     /*********************************
