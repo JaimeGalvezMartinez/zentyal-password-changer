@@ -1,4 +1,52 @@
-div>";
+<?php
+/***********************
+ * PROTECCIÓN POR SESIÓN
+ ***********************/
+session_start();
+
+if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+
+/***********************
+ * CONFIGURACIÓN PHP
+ ***********************/
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+$mensaje = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    putenv('LDAPTLS_REQCERT=never');
+
+    $ldap_host = "ldaps://127.0.0.1"; # ip de ZENTYAL/LDAP
+    $base_dn   = "DC=nombredominio,DC=local";  
+
+    // 🔐 ADMIN DEL DOMINIO (ZENTYAL)
+    $admin_user = "domainadmin@nombredominio.local";  # usuario admin zentyal 
+    $admin_pass = ""; # La clave de Usuario Admin LDAP
+
+    $usuario     = trim($_POST['usuario']);
+    $old_pass    = $_POST['pass_actual'];
+    $new_pass    = $_POST['pass_nueva'];
+    $repeat_pass = $_POST['pass_repetir'];
+
+    if ($new_pass !== $repeat_pass) {
+        $mensaje = "<div class='error'>Las contraseñas no coinciden</div>";
+        goto end;
+    }
+
+    /*********************************
+     * 1️⃣ COMPROBAR CREDENCIALES USER
+     *********************************/
+    $ldap = ldap_connect($ldap_host);
+    ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+    ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+
+    if (!@ldap_bind($ldap, "$usuario@casa.local", $old_pass)) {
+        $mensaje = "<div class='error'>Usuario o contraseña actual incorrectos</div>";
         goto end;
     }
 
@@ -150,3 +198,4 @@ a.logout {
 </div>
 </body>
 </html>
+
