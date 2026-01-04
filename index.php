@@ -1,53 +1,4 @@
-
-<?php
-/***********************
- * PROTECCIÓN POR SESIÓN
- ***********************/
-session_start();
-
-if (!isset($_SESSION['autenticado']) || $_SESSION['autenticado'] !== true) {
-    header("Location: login.php");
-    exit;
-}
-
-/***********************
- * CONFIGURACIÓN PHP
- ***********************/
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-$mensaje = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    putenv('LDAPTLS_REQCERT=never');
-
-    $ldap_host = "ldaps://127.0.0.1"; # o la ip de tu Zentyal / ldap
-    $base_dn   = "DC=dominio,DC=local";  # Cambiar en DC=nombredeldominio,DC=extensiondominio 
-
-    // 🔐 ADMIN DEL DOMINIO
-    $admin_user = "domainadmin@dominio.local";  # Usuario Admin Zentyal
-    $admin_pass = ""; # Contraseña Admin Zentyal
-
-    $usuario     = $_POST['usuario'];
-    $old_pass    = $_POST['pass_actual'];
-    $new_pass    = $_POST['pass_nueva'];
-    $repeat_pass = $_POST['pass_repetir'];
-
-    if ($new_pass !== $repeat_pass) {
-        $mensaje = "<div class='error'>Las contraseñas no coinciden</div>";
-        goto end;
-    }
-
-    /*********************************
-     * 1️⃣ COMPROBAR CREDENCIALES USER
-     *********************************/
-    $ldap = ldap_connect($ldap_host);
-    ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-    ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-
-    if (!@ldap_bind($ldap, "$usuario@dominio.local", $old_pass)) {
-        $mensaje = "<div class='error'>Credenciales incorrectas</div>";
+div>";
         goto end;
     }
 
@@ -61,24 +12,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
     if (!ldap_bind($ldap, $admin_user, $admin_pass)) {
-        $mensaje = "<div class='error'>Error interno LDAP</div>";
+        $mensaje = "<div class='error'>Error interno al conectar con LDAP</div>";
         goto end;
     }
 
     /*********************************
      * 3️⃣ BUSCAR DN REAL DEL USUARIO
      *********************************/
-    $filter = "(sAMAccountName=$usuario)";
+    $usuario_ldap = ldap_escape($usuario, '', LDAP_ESCAPE_FILTER);
+    $filter = "(sAMAccountName=$usuario_ldap)";
     $search = ldap_search($ldap, $base_dn, $filter, ['dn']);
 
     if (!$search) {
-        $mensaje = "<div class='error'>Usuario no encontrado</div>";
+        $mensaje = "<div class='error'>Usuario no encontrado en el dominio</div>";
         goto end;
     }
 
     $entries = ldap_get_entries($ldap, $search);
+
     if ($entries['count'] !== 1) {
-        $mensaje = "<div class='error'>Usuario ambiguo</div>";
+        $mensaje = "<div class='error'>Usuario ambiguo o inexistente</div>";
         goto end;
     }
 
@@ -91,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $entry = ['unicodePwd' => $newPassword];
 
     if (ldap_mod_replace($ldap, $user_dn, $entry)) {
-        $mensaje = "<div class='ok'>Contraseña cambiada correctamente. Cierre sesión e inicie sesión de nuevo.</div>";
+        $mensaje = "<div class='ok'>Contraseña cambiada correctamente. Vuelve a iniciar sesión.</div>";
     } else {
         $mensaje = "<div class='error'>No se pudo cambiar la contraseña (política del dominio)</div>";
     }
@@ -106,7 +59,6 @@ end:
 <head>
 <meta charset="UTF-8">
 <title>Cambiar contraseña LDAP</title>
-<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
@@ -144,11 +96,6 @@ input {
     font-size: 14px;
 }
 
-input:focus {
-    border-color: #1e3a5f;
-    outline: none;
-}
-
 button {
     width: 100%;
     padding: 12px;
@@ -181,16 +128,12 @@ a.logout {
     color: #1e3a5f;
     text-decoration: none;
 }
-
-a.logout:hover {
-    text-decoration: underline;
-}
 </style>
 </head>
 
 <body>
 <div class="container">
-    <h2>Cambiar contraseña LDAP Zentyal</h2>
+    <h2>Cambiar contraseña Zentyal LDAP</h2>
 
     <?= $mensaje ?>
 
@@ -202,7 +145,7 @@ a.logout:hover {
         <button type="submit">Cambiar contraseña</button>
     </form>
 
- 	<a class="logout" href="logout.php">Cerrar sesión</a>
+    <a class="logout" href="logout.php">Cerrar sesión</a>
 
 </div>
 </body>
